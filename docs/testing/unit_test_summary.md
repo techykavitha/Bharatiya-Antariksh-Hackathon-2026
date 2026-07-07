@@ -1,7 +1,7 @@
 # Unit Test Summary
 
 > **Last Updated:** 2026-07-07  
-> **Total Unit Tests:** 124
+> **Total Unit Tests:** 306
 
 ---
 
@@ -252,3 +252,55 @@
 | `test_sequential_execution` | Sequential mode | ✅ Pass |
 | `test_parallel_execution` | Parallel mode | ✅ Pass |
 | `test_retry_on_failure` | Retry policy | ✅ Pass |
+
+---
+
+## Version 0.2.0 Additions (182 new tests)
+
+> **Supplemental section.** All v0.1.0 content above is preserved.
+
+### Specialized Framework — test_specialized_framework.py (10 tests)
+
+| Test | Purpose | Status |
+|------|---------|--------|
+| Framework lifecycle, context, tools, metrics, health | BaseSpecializedAgent | ✅ Pass |
+
+### Flood Agent — test_flood_unit.py (12 tests), test_flood_integration.py (11 tests)
+
+Delhi flood scenario, tool execution, decision engine, reflection, validation — ✅ All pass
+
+### Water Resource Agent — test_water_unit.py (13 tests), test_water_integration.py (11 tests)
+
+Reservoir analysis, drought signals, inter-agent delegation — ✅ All pass
+
+### Heatwave Agent — test_heatwave_unit.py (13 tests), test_heatwave_integration.py (12 tests)
+
+UHI analysis, compound heat+AQI, unified decision, mock RL — ✅ All pass
+
+### Decision Framework — test_decision_unit.py (15), test_decision_serializer.py (6)
+
+DecisionRequest validation, constraints, priority, serialization — ✅ All pass
+
+### RL Optimization — test_rl_unit.py (11 tests)
+
+State encoding, policy inference, reward estimation — ✅ All pass
+
+### Explainability — test_xai_unit.py (7 tests)
+
+ExplanationEngine, confidence, uncertainty, evidence — ✅ All pass
+
+### Climate Knowledge Graph — test_ckg_unit.py (7 tests)
+
+Entity CRUD, validation, query APIs — ✅ All pass
+
+### v0.2.0 Unit Test Total
+
+| Layer | Unit Tests |
+|-------|-----------|
+| Specialized | 48 |
+| Decision | 21 |
+| RL | 11 |
+| XAI | 7 |
+| CKG | 7 |
+| **v0.2.0 unit subtotal** | **94** |
+| **Grand total (all layers)** | **306** |

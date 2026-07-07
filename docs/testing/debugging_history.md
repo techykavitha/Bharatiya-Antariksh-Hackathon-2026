@@ -1,6 +1,6 @@
 # Debugging History
 
-> **Last Updated:** 2026-07-07
+> **Last Updated:** 2026-07-07 (v0.2.0 — BUG-009 through BUG-017 added)
 
 ---
 
@@ -16,6 +16,15 @@
 | BUG-006 | Memory / Embedding | Low | ✅ Fixed |
 | BUG-007 | Supervisor | High | ✅ Fixed |
 | BUG-008 | Domain | Low | ✅ Fixed |
+| BUG-009 | Water / Decision | Medium | ✅ Fixed |
+| BUG-010 | RL / State Encoder | High | 🔄 Known Limitation |
+| BUG-011 | Heatwave / Decision | High | ✅ Fixed |
+| BUG-012 | Heatwave / Tools | Medium | ✅ Fixed |
+| BUG-013 | Heatwave / Tools | High | ✅ Fixed |
+| BUG-014 | Flood / Agent | Medium | ✅ Fixed |
+| BUG-015 | Decision / RL | Medium | ✅ Fixed |
+| BUG-016 | CKG / Builder | Medium | ✅ Fixed |
+| BUG-017 | CKG / Query | Medium | ✅ Fixed |
 
 ---
 
@@ -399,8 +408,351 @@ Pydantic models for execution results should always include `metadata` for exten
 
 ---
 
+## BUG-009: Water Resource Reciprocal Decision Flags
+
+| Field | Value |
+|-------|-------|
+| **Bug ID** | BUG-009 |
+| **Date Found** | 2026-07-07 |
+| **Component** | `WaterDecisionEngine` |
+| **Severity** | Medium |
+
+### Description
+
+Inter-agent coordination flags (`need_flood_agent`, `need_agriculture_agent`, etc.) were inconsistent with `suggested_agents` list — flags could be false while agents appeared in suggestions or vice versa.
+
+### Affected Files
+
+- `backend/agents/specialized/water_resource/water_decision_engine.py`
+- `backend/agents/specialized/water_resource/water_reasoning.py`
+
+### Root Cause
+
+Decision engine and reasoning module computed delegation signals independently without reciprocal validation.
+
+### Resolution
+
+Added consistency checks ensuring `need_*_agent` flags align with `suggested_agents` entries. Reasoning module now sets both atomically.
+
+### Regression Tests
+
+| Test | File | Status |
+|------|------|--------|
+| `test_decision_suggests_flood_agent_when_low_reservoir` | `test_water_integration.py` | ✅ Pass |
+| `test_reciprocal_agent_flags` | `test_water_unit.py` | ✅ Pass |
+
+### Final Status
+
+✅ Fixed
+
+---
+
+## BUG-010: RL State Encoder RIVER_DISCHARGE Enum Gap
+
+| Field | Value |
+|-------|-------|
+| **Bug ID** | BUG-010 |
+| **Date Found** | 2026-07-07 |
+| **Component** | `RLStateEncoder` |
+| **Severity** | High |
+
+### Description
+
+`RLOptimizationService.optimize()` fails when `DecisionRequest` includes `climate_state` because `RLStateEncoder` references `ClimateVariable.RIVER_DISCHARGE` which does not exist in the `ClimateVariable` enum.
+
+### Affected Files
+
+- `backend/rl/rl_state_encoder.py`
+- `backend/utils/enums.py`
+- `backend/agents/specialized/heatwave/heatwave_agent.py` (consumer)
+
+### Root Cause
+
+State encoder was written with a variable name not yet added to the shared enum. Encoding step raises `AttributeError` wrapped as `RLOptimizationError`.
+
+### Resolution
+
+**Partial fix:** Heatwave agent catches `RLOptimizationError` and falls back to decision-only response. Integration tests use `MockRLOptimizationService`. Full fix deferred (see TD-003 in technical debt register).
+
+### Regression Tests
+
+| Test | File | Status |
+|------|------|--------|
+| `test_heatwave_rl_optimization_with_mock` | `test_heatwave_integration.py` | ✅ Pass |
+| `test_optimize_without_climate_state` | `test_rl_integration.py` | ✅ Pass |
+
+### Final Status
+
+🔄 Known Limitation — workaround in place; enum fix pending
+
+---
+
+## BUG-011: Heatwave low_vegetation Always True
+
+| Field | Value |
+|-------|-------|
+| **Bug ID** | BUG-011 |
+| **Date Found** | 2026-07-07 |
+| **Component** | `HeatwaveDecisionEngine` |
+| **Severity** | High |
+
+### Description
+
+Tree plantation action was always recommended because condition used `signals.get("low_vegetation") or True`, which evaluates to `True` unconditionally.
+
+### Affected Files
+
+- `backend/agents/specialized/heatwave/heatwave_decision_engine.py`
+- `backend/agents/specialized/heatwave/heatwave_models.py`
+- `backend/agents/specialized/heatwave/heatwave_reasoning.py`
+
+### Root Cause
+
+Python `or True` short-circuit bug — likely introduced during rapid development of decision rules.
+
+### Resolution
+
+Changed condition to `if signals.get("low_vegetation"):`. Added `low_vegetation` to `HeatAnalysisSignals` and populated from NDVI reasoning.
+
+### Regression Tests
+
+| Test | File | Status |
+|------|------|--------|
+| `test_no_tree_plantation_when_vegetation_adequate` | `test_heatwave_unit.py` | ✅ Pass |
+| `test_tree_plantation_when_low_ndvi` | `test_heatwave_unit.py` | ✅ Pass |
+
+### Final Status
+
+✅ Fixed
+
+---
+
+## BUG-012: Heatwave Tools Missing get_input_schema()
+
+| Field | Value |
+|-------|-------|
+| **Bug ID** | BUG-012 |
+| **Date Found** | 2026-07-07 |
+| **Component** | `heatwave_tools.py` |
+| **Severity** | Medium |
+
+### Description
+
+All 10 heatwave tools failed instantiation because `AbstractTool` requires `get_input_schema()` which was not implemented.
+
+### Affected Files
+
+- `backend/agents/specialized/heatwave/heatwave_tools.py`
+
+### Root Cause
+
+New tools created without implementing required abstract method from `AbstractTool`.
+
+### Resolution
+
+Added `get_input_schema()` returning Pydantic model class for each of the 10 tools.
+
+### Regression Tests
+
+All 13 `test_heatwave_unit.py` tests — ✅ Pass
+
+### Final Status
+
+✅ Fixed
+
+---
+
+## BUG-013: Heatwave Tools File Corruption
+
+| Field | Value |
+|-------|-------|
+| **Bug ID** | BUG-013 |
+| **Date Found** | 2026-07-07 |
+| **Component** | `heatwave_tools.py` |
+| **Severity** | High |
+
+### Description
+
+Partial search-replace during development corrupted `heatwave_tools.py` with truncated class definitions and syntax errors.
+
+### Affected Files
+
+- `backend/agents/specialized/heatwave/heatwave_tools.py`
+
+### Root Cause
+
+Automated edit applied incorrect replacement spanning multiple tool class boundaries.
+
+### Resolution
+
+Full file rewrite restoring all 10 tool classes with complete implementations.
+
+### Regression Tests
+
+Full heatwave test suite (25 tests) — ✅ Pass
+
+### Final Status
+
+✅ Fixed
+
+---
+
+## BUG-014: Flood invoke() Signature Mismatch
+
+| Field | Value |
+|-------|-------|
+| **Bug ID** | BUG-014 |
+| **Date Found** | 2026-07-07 |
+| **Component** | `FloodAgent` |
+| **Severity** | Medium |
+
+### Description
+
+`FloodAgent.invoke()` override did not match `BaseSpecializedAgent` / `BaseAgent` signature expectations, causing test failures and potential LangGraph node incompatibility.
+
+### Affected Files
+
+- `backend/agents/specialized/flood/flood_agent.py`
+- `backend/tests/specialized/flood/test_flood_integration.py`
+
+### Root Cause
+
+Custom pipeline method introduced non-standard parameter names incompatible with base class contract.
+
+### Resolution
+
+Aligned `invoke()` signature with `BaseAgent.invoke(request: AgentRequest) -> AgentResponse`. Internal pipeline logic moved to private methods.
+
+### Regression Tests
+
+All 23 flood tests — ✅ Pass
+
+### Final Status
+
+✅ Fixed
+
+---
+
+## BUG-015: Decision Framework RL Payload Standardization
+
+| Field | Value |
+|-------|-------|
+| **Bug ID** | BUG-015 |
+| **Date Found** | 2026-07-07 |
+| **Component** | `DecisionRequest`, `RLOptimizationService` |
+| **Severity** | Medium |
+
+### Description
+
+RL service expected ad-hoc dict payloads from agents. Heatwave integration failed due to inconsistent field names between local schemas and RL encoder.
+
+### Affected Files
+
+- `backend/decision/decision_request.py`
+- `backend/rl/rl_service.py`
+- `backend/agents/specialized/heatwave/heatwave_decision_engine.py`
+
+### Root Cause
+
+No canonical serialization contract between decision layer and RL layer.
+
+### Resolution
+
+Added `DecisionRequest.to_rl_payload()` and standardized `RLOptimizationService.optimize()` to accept only `DecisionRequest`. Heatwave agent migrated to unified schema.
+
+### Regression Tests
+
+| Test | File | Status |
+|------|------|--------|
+| `test_to_rl_payload_fields` | `test_decision_unit.py` | ✅ Pass |
+| `test_optimize_accepts_decision_request` | `test_rl_integration.py` | ✅ Pass |
+
+### Final Status
+
+✅ Fixed
+
+---
+
+## BUG-016: CKG Self-Reference Validation Failure
+
+| Field | Value |
+|-------|-------|
+| **Bug ID** | BUG-016 |
+| **Date Found** | 2026-07-07 |
+| **Component** | `ClimateGraphBuilder` |
+| **Severity** | Medium |
+
+### Description
+
+India seed graph creation failed validation because `flood → flood` HISTORICALLY_RELATED self-edge was added.
+
+### Affected Files
+
+- `backend/knowledge_graph/graph_builder.py`
+- `backend/knowledge_graph/graph_validator.py`
+
+### Root Cause
+
+Builder template included reflexive historical relationship for flood events.
+
+### Resolution
+
+Removed self-referencing edge from seed graph builder.
+
+### Regression Tests
+
+| Test | File | Status |
+|------|------|--------|
+| `test_build_india_climate_graph_valid` | `test_ckg_integration.py` | ✅ Pass |
+
+### Final Status
+
+✅ Fixed
+
+---
+
+## BUG-017: CKG related_events Empty for RAINFALL
+
+| Field | Value |
+|-------|-------|
+| **Bug ID** | BUG-017 |
+| **Date Found** | 2026-07-07 |
+| **Component** | `GraphQueryEngine` |
+| **Severity** | Medium |
+
+### Description
+
+`related_events()` returned empty results for RAINFALL entity types despite HISTORICALLY_RELATED edges existing in the graph.
+
+### Affected Files
+
+- `backend/knowledge_graph/graph_query.py`
+
+### Root Cause
+
+`EVENT_ENTITY_TYPES` filter excluded RAINFALL from neighbor traversal for historical similarity queries.
+
+### Resolution
+
+Expanded `related_events()` to include all entity types connected via `HISTORICALLY_RELATED` relationships.
+
+### Regression Tests
+
+| Test | File | Status |
+|------|------|--------|
+| `test_related_events_for_rainfall` | `test_ckg_integration.py` | ✅ Pass |
+| `test_historical_similarity` | `test_ckg_unit.py` | ✅ Pass |
+
+### Final Status
+
+✅ Fixed
+
+---
+
 ## Related Documents
 
 - [Development Log 001](../development_logs/001_shared_memory.md)
 - [Development Log 002](../development_logs/002_climate_supervisor.md)
 - [Development Log 003](../development_logs/003_domain_supervisors.md)
+- [Development Logs 004–011](../development_logs/)
+- [Technical Debt](../engineering/technical_debt.md)

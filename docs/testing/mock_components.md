@@ -141,6 +141,37 @@ class _MockFloodAgent:
 | `ClimateSupervisor.create(memory)` | `climate_supervisor.py` | Supervisor with dependencies |
 | `EnvironmentalSupervisor.create(memory)` | `environmental_supervisor.py` | Domain supervisor |
 | `DomainRegistry.register_all_defaults(memory)` | `domain_registry.py` | All three domain supervisors |
+| `RLOptimizationService.create(memory)` | `rl_service.py` | RL service with in-memory policies |
+| `GraphEngine.create(seed_india=True)` | `graph_engine.py` | CKG with India seed graph |
+| `ExplanationEngine.create()` | `explanation_engine.py` | XAI engine |
+
+---
+
+## Version 0.2.0 Mock Additions
+
+### MockRLOptimizationService
+
+**Location:** `backend/tests/specialized/heatwave/conftest.py`  
+**Purpose:** Bypass `ClimateVariable.RIVER_DISCHARGE` enum bug (BUG-010) in heatwave integration tests
+
+| Method | Behavior |
+|--------|----------|
+| `optimize(request)` | Returns deterministic `DecisionResponse` with ranked actions |
+
+### InMemoryTrainingManager
+
+**Location:** `backend/rl/rl_training_manager.py`  
+**Purpose:** Episode recording without persistent storage
+
+| Method | Behavior |
+|--------|----------|
+| `record_episode(episode)` | Stores in Python list |
+| `get_episodes()` | Returns recorded episodes |
+
+### Mock SpecializedRLEngineInterface
+
+**Location:** `backend/tests/specialized/flood/conftest.py`, `water_resource/conftest.py`  
+**Purpose:** Simulates RL policy requests for Flood and Water agents
 
 ---
 
@@ -148,3 +179,5 @@ class _MockFloodAgent:
 
 - [Unit Test Summary](./unit_test_summary.md)
 - [Shared Memory](../memory/shared_memory.md)
+- [RL Optimization Service](../rl/rl_optimization_service.md)
+- [Debugging History](./debugging_history.md)

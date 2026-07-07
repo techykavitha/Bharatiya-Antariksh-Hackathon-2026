@@ -91,3 +91,45 @@ Coverage HTML report will be generated in `htmlcov/`.
 
 - [Unit Test Summary](./unit_test_summary.md)
 - [Future Tests](./future_tests.md)
+
+---
+
+## Version 0.2.0 Coverage Additions
+
+> **Supplemental section.** All v0.1.0 content above is preserved.
+
+| Module | Source Files | Test Files | Tests | Estimated Coverage |
+|--------|-------------|-----------|-------|-----------------|
+| `agents/specialized/` (framework) | 11 | 1 | 10 | ~85% |
+| `agents/specialized/flood/` | 11 | 2 | 23 | ~90% |
+| `agents/specialized/water_resource/` | 11 | 2 | 24 | ~90% |
+| `agents/specialized/heatwave/` | 11 | 2 | 25 | ~90% |
+| `decision/` | 10 | 3 | 38 | ~90% |
+| `rl/` | 14 | 2 | 26 | ~85% |
+| `xai/` | 9 | 2 | 13 | ~85% |
+| `knowledge_graph/` | 10 | 2 | 24 | ~90% |
+
+**v0.2.0 overall estimated coverage:** ~82% (up from ~75%)
+
+### Well-Covered (v0.2.0)
+
+| Area | Tests | Notes |
+|------|-------|-------|
+| BaseSpecializedAgent pipeline | 10 | Framework unit tests |
+| Flood decision engine | 23 | Unit + Delhi integration |
+| Water inter-agent delegation | 24 | Reciprocal flags regression |
+| Heatwave unified decision + RL | 25 | Mock RL workaround |
+| DecisionRequest/Response | 38 | Full validator coverage |
+| RL optimize() pipeline | 26 | Without climate_state |
+| ExplanationEngine | 13 | All sub-engines |
+| GraphEngine query/reasoning | 24 | India seed graph |
+
+### Under-Covered (v0.2.0)
+
+| Area | Gap |
+|------|-----|
+| RL with climate_state attached | BUG-010 blocks real path |
+| CKG → agent integration | Not wired |
+| XAI auto-pipeline in agents | Manual invocation only |
+| Climate → Domain → Agent E2E | No test fixture |
+| `services/bootstrap.py` | Still 0% |

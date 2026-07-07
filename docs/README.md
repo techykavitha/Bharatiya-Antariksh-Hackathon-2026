@@ -239,3 +239,109 @@ See [Documentation Growth Protocol](./engineering/documentation_growth_protocol.
 | Diagrams | [diagrams/](./diagrams/) |
 | Progress tracker | [engineering/progress_tracker.md](./engineering/progress_tracker.md) |
 | Changelog | [../CHANGELOG.md](../CHANGELOG.md) |
+
+---
+
+## Version 0.2.0 Update (2026-07-07)
+
+> **Supplemental section.** All v0.1.0 content above is preserved. This section reflects engineering work completed in Prompts 5–12.
+
+### Current Progress (v0.2.0)
+
+| Milestone | Component | Status | Tests | Version |
+|-----------|-----------|--------|-------|---------|
+| M0 | Project Foundation | ✅ Complete | 20 | 0.1.0 |
+| M1 | Shared Memory Layer | ✅ Complete | 64 | 0.1.0 |
+| M2 | Climate Supervisor | ✅ Complete | 22 | 0.1.0 |
+| M3 | Domain Supervisors | ✅ Complete | 18 | 0.1.0 |
+| M4 | Engineering Documentation | ✅ Complete | — | 0.1.0 |
+| M5a | Specialized Agent Framework | ✅ Complete | 10 | 0.2.0 |
+| M5b | Flood Agent | ✅ Complete | 23 | 0.2.0 |
+| M5c | Water Resource Agent | ✅ Complete | 24 | 0.2.0 |
+| M5d | Heatwave Agent | ✅ Complete | 25 | 0.2.0 |
+| M5e | Decision Framework | ✅ Complete | 38 | 0.2.0 |
+| M6 | RL Optimization Service | ✅ Complete | 26 | 0.2.0 |
+| M7a | Explainability Framework | ✅ Complete | 13 | 0.2.0 |
+| M7b | Climate Knowledge Graph | ✅ Complete | 24 | 0.2.0 |
+| M8 | Climate Copilot | ⬜ Not Started | — | — |
+| M9 | Simulation Engine | ⬜ Not Started | — | — |
+| M10 | FastAPI / Deployment | ⬜ Not Started | — | — |
+
+**Total automated tests passing:** 306 (as of 2026-07-07)
+
+**Estimated project completion:** ~62%
+
+### Completed Components (v0.2.0 additions)
+
+| Component | Location | Documentation |
+|-----------|----------|---------------|
+| Specialized Agent Framework | `backend/agents/specialized/` | [agents/specialized_framework.md](./agents/specialized_framework.md) |
+| Flood Agent | `backend/agents/specialized/flood/` | [agents/flood_agent.md](./agents/flood_agent.md) |
+| Water Resource Agent | `backend/agents/specialized/water_resource/` | [agents/water_resource_agent.md](./agents/water_resource_agent.md) |
+| Heatwave Agent | `backend/agents/specialized/heatwave/` | [agents/heatwave_agent.md](./agents/heatwave_agent.md) |
+| Decision Framework | `backend/decision/` | [decision/decision_framework.md](./decision/decision_framework.md) |
+| RL Optimization Service | `backend/rl/` | [rl/rl_optimization_service.md](./rl/rl_optimization_service.md) |
+| Explainability Framework | `backend/xai/` | [xai/explainability_framework.md](./xai/explainability_framework.md) |
+| Climate Knowledge Graph | `backend/knowledge_graph/` | [knowledge_graph/climate_knowledge_graph.md](./knowledge_graph/climate_knowledge_graph.md) |
+
+### Architecture Overview (v0.2.0)
+
+See [System Evolution](./architecture/system_evolution.md) for the full Mermaid timeline. The specialized agent tier, decision framework, RL service, explainability layer, and climate knowledge graph now sit between domain supervisors and the memory layer.
+
+### Repository Structure (v0.2.0 additions)
+
+New backend modules: `agents/specialized/`, `decision/`, `rl/`, `xai/`, `knowledge_graph/`. Test count: **306**.
+
+### Technology Stack (v0.2.0)
+
+NetworkX DiGraph for CKG; in-memory heuristic RL policies (Stable Baselines3 planned); centralized XAI via `ExplanationEngine`.
+
+### Development Timeline (v0.2.0 additions)
+
+| Date | Milestone | Deliverable |
+|------|-----------|-------------|
+| 2026-07-07 | M5a–M7b | Framework, 3 agents, decision, RL, XAI, CKG — 306 tests |
+
+### Current AI Architecture (v0.2.0)
+
+8-tier stack: Foundation → Memory → Orchestration → Specialized Agents → Decision → RL → XAI → Knowledge Graph.
+
+### Current Specialized Agents
+
+| Agent ID | Domain | Status | Tests |
+|----------|--------|--------|-------|
+| `flood_agent` | Environmental | ✅ | 23 |
+| `water_resource_agent` | Infrastructure | ✅ | 24 |
+| `heatwave_agent` | Environmental | ✅ | 25 |
+| 5 remaining slots | Various | ⬜ Declared | — |
+
+### Current Test Counts (v0.2.0)
+
+| Layer | Tests |
+|-------|-------|
+| Foundation + Memory + Supervisor + Domain | 124 |
+| Specialized (framework + agents) | 82 |
+| Decision | 38 |
+| RL | 26 |
+| XAI | 13 |
+| CKG | 24 |
+| **Total** | **306** |
+
+### Current Documentation Status (v0.2.0)
+
+14 component docs, 12 development logs, 10 ADRs, 15+ diagrams, technical debt register, system evolution doc.
+
+### Quick Navigation (v0.2.0 additions)
+
+| Topic | Document |
+|-------|----------|
+| Specialized framework | [agents/specialized_framework.md](./agents/specialized_framework.md) |
+| Flood agent | [agents/flood_agent.md](./agents/flood_agent.md) |
+| Water resource agent | [agents/water_resource_agent.md](./agents/water_resource_agent.md) |
+| Heatwave agent | [agents/heatwave_agent.md](./agents/heatwave_agent.md) |
+| Decision framework | [decision/decision_framework.md](./decision/decision_framework.md) |
+| RL optimization | [rl/rl_optimization_service.md](./rl/rl_optimization_service.md) |
+| Explainability | [xai/explainability_framework.md](./xai/explainability_framework.md) |
+| Climate knowledge graph | [knowledge_graph/climate_knowledge_graph.md](./knowledge_graph/climate_knowledge_graph.md) |
+| System evolution | [architecture/system_evolution.md](./architecture/system_evolution.md) |
+| Technical debt | [engineering/technical_debt.md](./engineering/technical_debt.md) |

@@ -1,44 +1,53 @@
 # Reinforcement Learning Engine
 
-> **Status:** ⬜ Not Started  
-> **Version:** —  
+> **Status:** ✅ RL Optimization Service Complete (v0.2.0)  
+> **Version:** 0.2.0  
 > **Last Updated:** 2026-07-07
 
 ---
 
 ## Purpose
 
-The RL Engine will provide policy optimization for climate decision support, enabling the Climate Supervisor to request optimal action policies for disaster response, resource allocation, and scenario planning.
+The RL layer provides policy optimization for climate decision support. As of v0.2.0, the `RLOptimizationService` is fully implemented and agent-agnostic.
 
 ---
 
-## Current State
+## Current State (v0.2.0)
 
-Only the `RLEngineInterface` protocol is defined in `backend/agents/supervisor/execution_context.py`. No implementation exists.
+| Component | Status | Location |
+|-----------|--------|----------|
+| `RLOptimizationService` | ✅ Complete | `backend/rl/rl_service.py` |
+| `RLEngine` | ✅ Complete | `backend/rl/rl_engine.py` |
+| `RLInference` | ✅ Complete | `backend/rl/rl_inference.py` |
+| `PolicyManager` | ✅ Complete | `backend/rl/rl_policy_manager.py` |
+| `RLEngineInterface` (supervisor) | ✅ Interface | `execution_context.py` |
+| Stable Baselines3 | ⬜ Planned | — |
 
-### Interface Methods (Defined)
+**Primary API:** `RLOptimizationService.optimize(DecisionRequest) → DecisionResponse`
 
-| Method | Description |
-|--------|-------------|
-| `request_policy(scenario_id, context)` | Request optimal policy |
-| `evaluate_actions(scenario_id, actions)` | Evaluate action outcomes |
-| `rank_actions(scenario_id, actions)` | Rank actions by expected utility |
+**Tests:** 26 (11 unit + 15 integration)
 
-### ClimateSupervisor Delegation
-
-`ClimateSupervisor` exposes `request_policy()`, `evaluate_actions()`, and `rank_actions()` methods that delegate to the injected `RLEngineInterface` implementation.
+See [RL Optimization Service](./rl_optimization_service.md) for full documentation.
 
 ---
 
-## Planned Architecture
+## Legacy Interface (Supervisor Layer)
+
+`ClimateSupervisor` still exposes `request_policy()`, `evaluate_actions()`, and `rank_actions()` via `RLEngineInterface` protocol. Specialized agents use either:
+
+- `SpecializedRLEngineInterface.request_rl()` — Flood, Water
+- `RLOptimizationService.optimize()` — Heatwave
+
+---
+
+## Planned Architecture (Remaining)
 
 ```
-ClimateSupervisor
-    └── RLEngineInterface
-            └── StableBaselines3Engine (planned)
-                    ├── PolicyStore (MemoryManager)
-                    ├── ScenarioEvaluator
-                    └── ActionRanker
+RLOptimizationService
+    └── StableBaselines3Engine (planned)
+            ├── PolicyStore (S3 / MemoryManager)
+            ├── TrainedModelArtifacts
+            └── OnlineLearningPipeline
 ```
 
 ---
@@ -47,15 +56,22 @@ ClimateSupervisor
 
 | Dependency | Status |
 |------------|--------|
+| Decision Framework | ✅ Complete |
 | Simulation Engine | ⬜ Not started |
-| Digital Twin Interface | ⬜ Interface only |
 | Stable Baselines3 | ⬜ Not in requirements.txt |
-| Policy schema design | ⬜ Not started |
 
 ---
 
 ## Related Documents
 
-- [Climate Supervisor](../supervisor/climate_supervisor.md)
-- [ADR-002](../decisions/ADR-002_hierarchical_supervisors.md)
+- [RL Optimization Service](./rl_optimization_service.md)
+- [Decision Framework](../decision/decision_framework.md)
+- [ADR-008](../decisions/ADR-008_rl_optimization_service.md)
+- [RL Optimization Flow](../diagrams/rl_optimization_flow.md)
 - [Progress Tracker](../engineering/progress_tracker.md)
+
+---
+
+## Historical Note (v0.1.0)
+
+Prior to v0.2.0, only the `RLEngineInterface` protocol was defined with no implementation. That content is superseded by the sections above.

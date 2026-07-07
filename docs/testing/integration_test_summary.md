@@ -131,3 +131,119 @@ AgentRequest → BaseAgent.invoke()
 3. **Multi-domain WHAT_IF** — Verify parallel execution across environmental + infrastructure + emergency
 4. **Memory persistence roundtrip** — Store in one request, retrieve in subsequent request with same session_id
 5. **Failure cascade** — Domain agent failure → climate supervisor graceful degradation
+
+---
+
+## Version 0.2.0 Integration Flows
+
+> **Supplemental section.** All v0.1.0 content above is preserved.
+
+### Flow 5: Flood Agent End-to-End
+
+**File:** `backend/tests/specialized/flood/test_flood_integration.py`
+
+```
+AgentRequest → FloodAgent.invoke()
+    → Tools (rainfall, river level, DEM)
+    → FloodReasoningEngine → FloodDecisionEngine
+    → SpecializedRLEngineInterface (optional)
+    → FloodReport → AgentResponse
+```
+
+| Step | Component | Verified |
+|------|-----------|----------|
+| Tool execution | 9 flood tools | ✅ |
+| Decision generation | FloodDecisionEngine | ✅ |
+| Memory persistence | MemoryManager | ✅ |
+| Delhi scenario | Integration fixture | ✅ |
+
+### Flow 6: Water Resource Agent with Inter-Agent Delegation
+
+**File:** `backend/tests/specialized/water_resource/test_water_integration.py`
+
+```
+AgentRequest → WaterResourceAgent.invoke()
+    → Tools → Reasoning → Decision
+    → suggested_agents (flood, agriculture)
+    → WaterReport
+```
+
+| Step | Component | Verified |
+|------|-----------|----------|
+| Reservoir analysis | Water tools | ✅ |
+| Reciprocal agent flags | WaterDecisionEngine | ✅ |
+| Low reservoir → flood suggestion | Integration | ✅ |
+
+### Flow 7: Heatwave Agent with Unified Decision + RL
+
+**File:** `backend/tests/specialized/heatwave/test_heatwave_integration.py`
+
+```
+AgentRequest → HeatwaveAgent.invoke()
+    → Tools → Reasoning → DecisionRequest (unified)
+    → RLOptimizationService (mock) → DecisionResponse
+    → HeatwaveReport
+```
+
+| Step | Component | Verified |
+|------|-----------|----------|
+| Unified DecisionRequest | backend.decision | ✅ |
+| RL optimization (mock) | MockRLOptimizationService | ✅ |
+| Ahmedabad UHI scenario | Integration | ✅ |
+| Compound heat+AQI | Integration | ✅ |
+
+### Flow 8: Decision Framework → RL Service
+
+**File:** `backend/tests/decision/test_decision_integration.py`, `backend/tests/rl/test_rl_integration.py`
+
+```
+DecisionRequest → DecisionManager.validate()
+    → RLOptimizationService.optimize()
+    → DecisionResponse with ActionRanking
+```
+
+| Step | Component | Verified |
+|------|-----------|----------|
+| Schema validation | DecisionValidator | ✅ |
+| RL payload | to_rl_payload() | ✅ |
+| Constraint gates | RL + Decision | ✅ |
+| Policy switching | RLInference | ✅ |
+
+### Flow 9: Explainability Pipeline
+
+**File:** `backend/tests/xai/test_xai_integration.py`
+
+```
+ExplanationInput → ExplanationEngine.explain()
+    → ExplainabilityReport (trace, evidence, confidence, alternatives)
+```
+
+| Step | Component | Verified |
+|------|-----------|----------|
+| explain_decision() | DecisionRequest + Response | ✅ |
+| explain_pipeline() | Agent artifacts | ✅ |
+
+### Flow 10: Climate Knowledge Graph
+
+**File:** `backend/tests/knowledge_graph/test_ckg_integration.py`
+
+```
+ClimateGraphBuilder.build_india_climate_graph()
+    → GraphEngine → Query/Reasoning APIs
+```
+
+| Step | Component | Verified |
+|------|-----------|----------|
+| India seed graph | 50+ entities | ✅ |
+| impact_chain() | GraphQueryEngine | ✅ |
+| compound_disasters() | GraphReasoningEngine | ✅ |
+| affected_agents() | Multi-agent deps | ✅ |
+
+### Remaining Integration Gaps (v0.2.0)
+
+| Gap | Blocker | Priority |
+|-----|---------|----------|
+| Climate Supervisor → Domain → Specialized Agent | No E2E test fixture | High |
+| CKG → Agent context assembly | Not wired | Medium |
+| XAI auto-invoke in agent pipeline | Manual only | Medium |
+| Real RL with climate_state | BUG-010 enum gap | High |
