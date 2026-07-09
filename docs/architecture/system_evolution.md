@@ -1,8 +1,8 @@
 # System Evolution
 
 > **Document Status:** Active  
-> **Version:** 0.2.0  
-> **Last Updated:** 2026-07-07  
+> **Version:** 0.3.0  
+> **Last Updated:** 2026-07-09  
 > **Maintainer:** Nexora Engineering
 
 ---
@@ -155,10 +155,111 @@ flowchart LR
 |---------|-----------|-------|-----------------|
 | 0.1.0 | M0–M4 | 124 | Foundation, memory, supervisors, docs |
 | 0.2.0 | M5–M7 (partial) | 306 | Specialized agents, decision, RL, XAI, CKG |
+| 0.3.0 | M5 (complete) | 396 | All 8 specialized agents |
 
 ---
 
-## What Changed Between v0.1.0 and v0.2.0
+## Version 0.3.0 Evolution (2026-07-09)
+
+### Capability Stack (updated)
+
+```
+Foundation
+    ↓
+Memory Layer
+    ↓
+Climate Supervisor
+    ↓
+Domain Supervisors
+    ↓
+Specialized Agent Framework
+    ↓
+Flood Agent → Water Resource Agent → Heatwave Agent
+    ↓
+Decision Framework → RL Optimization → Explainability → Climate Knowledge Graph
+    ↓
+Cyclone Agent
+    ↓
+Disaster Response Agent
+    ↓
+Urban Planning Agent
+    ↓
+Agriculture Agent (+ RAG)
+    ↓
+Air Quality Agent
+```
+
+### Evolution Timeline (v0.3.0 additions)
+
+```mermaid
+timeline
+    title Hyperion AI Layer Evolution (v0.3.0)
+    2026-07-07 M0-M7b : Foundation through CKG (306 tests)
+    2026-07-09 M5f : Cyclone Agent (24 tests)
+    2026-07-09 M5g : Disaster Response Agent (16 tests)
+    2026-07-09 M5h : Urban Planning Agent (16 tests)
+    2026-07-09 M5i : Agriculture Agent + RAG (17 tests)
+    2026-07-09 M5j : Air Quality Agent (17 tests)
+```
+
+### Layered Architecture (v0.3.0)
+
+```mermaid
+flowchart TB
+    subgraph L3["Layer 3 — Specialized Agents (v0.3.0 COMPLETE)"]
+        FA[Flood]
+        WA[Water]
+        HA[Heatwave]
+        AQ[Air Quality]
+        UP[Urban Planning]
+        AG[Agriculture + RAG]
+        CY[Cyclone]
+        DR[Disaster Response]
+    end
+
+    subgraph L4["Layer 4 — Decision + RL (v0.2.0)"]
+        DF[Decision Framework]
+        RL[RLOptimizationService]
+    end
+
+    subgraph L5["Layer 5 — XAI + CKG (v0.2.0)"]
+        XAI[ExplanationEngine]
+        CKG[GraphEngine]
+    end
+
+    L3 --> L4 --> L5
+```
+
+### What Changed Between v0.2.0 and v0.3.0
+
+| Area | v0.2.0 | v0.3.0 |
+|------|--------|--------|
+| Specialized agents | 3 of 8 | **8 of 8 (complete)** |
+| Agriculture RAG | None | Provider-agnostic `AgricultureRagService` |
+| Urban planning | Not started | Scenario intelligence for future simulation |
+| Disaster coordination | Not started | Meta-agent with live hazard consultation |
+| CKG agent wiring | Partial (heatwave only) | All 5 new agents query CKG in observe |
+| XAI auto-pipeline | Heatwave only | All Prompt 13–17 agents |
+| Test count | 306 | **396** |
+
+### Future Evolution (updated)
+
+```mermaid
+flowchart TB
+    NOW[v0.3.0 - All Agents Complete]
+    NEXT1[Flood/Water Decision Migration]
+    NEXT2[FastAPI HTTP Layer]
+    NEXT3[Climate Copilot]
+    NEXT4[Scenario Simulation Engine]
+    NEXT5[Production Deployment]
+
+    NOW --> NEXT1
+    NEXT1 --> NEXT2
+    NEXT2 --> NEXT3
+    NEXT3 --> NEXT4
+    NEXT4 --> NEXT5
+```
+
 
 | Area | v0.1.0 | v0.2.0 |
 |------|--------|--------|

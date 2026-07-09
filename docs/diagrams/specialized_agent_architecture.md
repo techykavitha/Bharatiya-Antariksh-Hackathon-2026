@@ -63,3 +63,46 @@ flowchart LR
     SA --> XAI[ExplanationEngine]
     SA --> CKG[GraphEngine]
 ```
+
+---
+
+## Version 0.3.0 Update — All 8 Agents Complete (2026-07-09)
+
+```mermaid
+flowchart TB
+    subgraph Environmental["Environmental Supervisor"]
+        FA[flood_agent]
+        HA[heatwave_agent]
+        AQ[air_quality_agent]
+    end
+
+    subgraph Infrastructure["Infrastructure Supervisor"]
+        WA[water_resource_agent]
+        UP[urban_planning_agent]
+        AG[agriculture_agent + RAG]
+    end
+
+    subgraph Emergency["Emergency Supervisor"]
+        CY[cyclone_agent]
+        DR[disaster_response_agent]
+    end
+
+    BSA[BaseSpecializedAgent] --> FA
+    BSA --> HA
+    BSA --> AQ
+    BSA --> WA
+    BSA --> UP
+    BSA --> AG
+    BSA --> CY
+    BSA --> DR
+
+    BSA --> DF[Decision Framework]
+    BSA --> RL[RLOptimizationService]
+    BSA --> XAI[ExplanationEngine]
+    BSA --> CKG[GraphEngine]
+    AG --> RAG[AgricultureRagService]
+```
+
+**Test count:** 172 specialized agent tests (396 total suite).
+
+See [Specialized Agents Overview](../agents/specialized_agents_overview.md) for per-agent details.

@@ -1,6 +1,6 @@
 # Architecture Diagrams Index
 
-> **Last Updated:** 2026-07-07
+> **Last Updated:** 2026-07-09 | **Version:** 0.3.0
 
 ---
 
@@ -23,6 +23,13 @@
 | Explainability Pipeline | [explainability_pipeline.md](./explainability_pipeline.md) | XAI sub-engine data flow |
 | Agent → Decision → RL Flow | [agent_decision_rl_flow.md](./agent_decision_rl_flow.md) | Cross-layer decision and RL integration |
 | Knowledge Graph Reasoning | [knowledge_graph_reasoning_flow.md](./knowledge_graph_reasoning_flow.md) | CKG query and reasoning APIs |
+| Cyclone Workflow | [cyclone_workflow.md](./cyclone_workflow.md) | Cyclone agent 12-tool pipeline |
+| Disaster Response Workflow | [disaster_response_workflow.md](./disaster_response_workflow.md) | Multi-hazard coordination |
+| Urban Planning Workflow | [urban_planning_workflow.md](./urban_planning_workflow.md) | Long-term adaptation planning |
+| Agriculture Workflow | [agriculture_workflow.md](./agriculture_workflow.md) | Agriculture agent + RAG pipeline |
+| Air Quality Workflow | [air_quality_workflow.md](./air_quality_workflow.md) | AQI assessment and mitigation |
+| Supervisor Agent Hierarchy | [supervisor_agent_hierarchy.md](./supervisor_agent_hierarchy.md) | Three supervisors, 8 agents |
+| Agent Interaction Map | [agent_interaction_map.md](./agent_interaction_map.md) | Inter-agent peer communication |
 
 ---
 

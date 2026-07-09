@@ -163,3 +163,84 @@ backend/tests/
 All 9 bugs fixed in Prompts 5–12 (BUG-009 through BUG-017) have dedicated regression tests. BUG-010 (RIVER_DISCHARGE) uses mock workaround — full fix pending.
 
 See [Debugging History](./debugging_history.md) for full bug registry.
+
+---
+
+## Version 0.3.0 Update (2026-07-09)
+
+> **Supplemental section.** All v0.2.0 content above is preserved.
+
+### Current Total Tests
+
+**396** (+90 since v0.2.0)
+
+### Current Passing Tests
+
+**396 / 396** (100% pass rate)
+
+### Summary by Layer (v0.3.0)
+
+| Layer | Tests | Status |
+|-------|-------|--------|
+| Foundation + Memory + Supervisor + Domain | 124 | ✅ |
+| Specialized Framework | 10 | ✅ |
+| Flood + Water + Heatwave | 72 | ✅ |
+| Cyclone | 24 | ✅ |
+| Disaster Response | 16 | ✅ |
+| Urban Planning | 16 | ✅ |
+| Agriculture | 17 | ✅ |
+| Air Quality | 17 | ✅ |
+| Decision + RL + XAI + CKG | 101 | ✅ |
+| **Total** | **396** | **✅** |
+
+### Specialized Agent Test Matrix (v0.3.0)
+
+| Agent | Unit | Integration | Scenarios |
+|-------|------|-------------|-----------|
+| Cyclone | 12 | 12 | Odisha Fani, Gujarat Tauktae, Chennai, Bengal |
+| Disaster Response | 7 | 9 | Kerala floods, Delhi heat, Mumbai compound |
+| Urban Planning | 7 | 9 | Chennai flood, Delhi UHI, Bengaluru, Hyderabad |
+| Agriculture | 8 | 9 | Punjab wheat, TN paddy, Maharashtra cotton, Karnataka drought |
+| Air Quality | 8 | 9 | Delhi severe, Punjab stubble, Rajasthan dust, Mumbai coastal |
+
+### Mock Components (v0.3.0 additions)
+
+| Mock | Used By | Purpose |
+|------|---------|---------|
+| `MockCycloneComm` | Cyclone tests | Peer agent responses |
+| `MockDisasterComm` | Disaster tests | Hazard agent consultation |
+| `MockUrbanComm` | Urban tests | Heatwave/flood/water peers |
+| `MockAgricultureComm` | Agriculture tests | Water/heatwave/flood peers |
+| `MockAgricultureRAG` / `InMemoryAgricultureRAG` | Agriculture tests | Provider-agnostic RAG |
+| `MockAirQualityComm` | Air Quality tests | Heatwave/urban/agriculture/disaster peers |
+| `MockRLOptimizationService` | All new agent integration tests | Bypass RIVER_DISCHARGE bug |
+
+### Integration Matrix (v0.3.0 additions)
+
+| Source | Target | Status |
+|--------|--------|--------|
+| Cyclone Agent | RLOptimizationService (mock) | ✅ |
+| Cyclone Agent | GraphEngine (CKG) | ✅ |
+| Cyclone Agent | ExplanationEngine | ✅ |
+| Disaster Agent | Live peer consultation (4 agents) | ✅ |
+| Urban Agent | CKG + RL + XAI | ✅ |
+| Agriculture Agent | RAG + CKG + RL + XAI | ✅ |
+| Air Quality Agent | CKG + RL + XAI | ✅ |
+| All new agents | Environmental/Infrastructure/Emergency supervisor slots | ✅ |
+
+### Performance Testing (v0.3.0)
+
+| Test | Target | Actual | Status |
+|------|--------|--------|--------|
+| Full suite (396 tests) | < 30s | ~8s | ✅ Pass |
+| Single agent invoke | < 500ms | 50–250ms | ✅ Pass |
+
+### Regression Testing (v0.3.0)
+
+All bugs from Prompts 13–17 (BUG-018 through BUG-024) have regression tests. See [Debugging History](./debugging_history.md).
+
+### Test Execution History (v0.3.0)
+
+| Date | Version | Result | Duration |
+|------|---------|--------|----------|
+| 2026-07-09 | 0.3.0 | 396 passed | ~8s |

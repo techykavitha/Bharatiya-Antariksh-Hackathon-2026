@@ -133,3 +133,40 @@ Coverage HTML report will be generated in `htmlcov/`.
 | XAI auto-pipeline in agents | Manual invocation only |
 | Climate → Domain → Agent E2E | No test fixture |
 | `services/bootstrap.py` | Still 0% |
+
+---
+
+## Version 0.3.0 Update (2026-07-09)
+
+> **Supplemental section.** All v0.2.0 content above is preserved.
+
+### Coverage by Module (v0.3.0 additions)
+
+| Module | Files | Tests | Est. Coverage |
+|--------|-------|-------|---------------|
+| `specialized/cyclone/` | 10 | 24 | ~88% |
+| `specialized/disaster_response/` | 9 | 16 | ~85% |
+| `specialized/urban_planning/` | 9 | 16 | ~85% |
+| `specialized/agriculture/` | 10 | 17 | ~87% |
+| `specialized/air_quality/` | 9 | 17 | ~86% |
+
+**v0.3.0 overall estimated coverage:** ~84% (up from ~82%)
+
+### Well-Covered (v0.3.0)
+
+| Area | Tests | Notes |
+|------|-------|-------|
+| Cyclone two-batch tool execution | 24 | BUG-018 regression |
+| Disaster multi-agent consultation | 16 | Live peer mocks |
+| Agriculture RAG retrieval | 17 | InMemoryAgricultureRAG |
+| Air Quality AQI categorization | 17 | CPCB sub-index verified |
+| All 8 specialized agents | 172 | Full OODA pipeline |
+
+### Under-Covered (v0.3.0)
+
+| Area | Gap |
+|------|-----|
+| Real RL with climate_state | BUG-010 blocks real path |
+| FastAPI endpoints | Not implemented |
+| CesiumJS digital twin UI | Not implemented |
+| Production RAG vector store | In-memory only |

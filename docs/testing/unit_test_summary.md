@@ -304,3 +304,38 @@ Entity CRUD, validation, query APIs — ✅ All pass
 | CKG | 7 |
 | **v0.2.0 unit subtotal** | **94** |
 | **Grand total (all layers)** | **306** |
+
+---
+
+## Version 0.3.0 Update (2026-07-09)
+
+> **Supplemental section.** All v0.2.0 content above is preserved.
+
+### Specialized Agent Unit Tests (v0.3.0 additions)
+
+| Agent | File(s) | Tests | Status |
+|-------|---------|-------|--------|
+| Cyclone | `test_cyclone_unit.py`, `test_cyclone_reasoning.py` | 12 | ✅ Pass |
+| Disaster Response | `test_disaster_unit.py`, `test_disaster_reasoning.py` | 7 | ✅ Pass |
+| Urban Planning | `test_urban_unit.py`, `test_urban_reasoning.py` | 7 | ✅ Pass |
+| Agriculture | `test_agriculture_unit.py`, `test_agriculture_reasoning.py`, `test_agriculture_rag.py` | 8 | ✅ Pass |
+| Air Quality | `test_air_quality_unit.py`, `test_air_quality_reasoning.py` | 8 | ✅ Pass |
+
+### v0.3.0 Unit Test Total
+
+| Layer | Unit Tests |
+|-------|-----------|
+| Specialized (Prompts 13–17) | 42 |
+| **v0.3.0 unit subtotal** | **42** |
+| **Grand total (all layers)** | **396** |
+
+### Regression Tests (v0.3.0)
+
+| Bug ID | Test Coverage |
+|--------|---------------|
+| BUG-018 | Cyclone two-batch tool execution |
+| BUG-019 | CKG `region_id` fallback |
+| BUG-021 | Agriculture `water_stress` + `drought_risk` |
+| BUG-022 | Air Quality `Objective` schema |
+| BUG-023 | Air Quality XAI counterfactual strings |
+| BUG-024 | Air Quality PM biomass threshold |

@@ -59,6 +59,30 @@ Mark performance tests with `@pytest.mark.performance` and exclude from default 
 
 ---
 
+## Version 0.3.0 Performance Results (2026-07-09)
+
+> **Supplemental section.** All planned tests above are preserved.
+
+### Observed Benchmarks
+
+| Test | Target | Actual | Status |
+|------|--------|--------|--------|
+| Full suite (396 tests) | < 30s | ~8.3s | ✅ Pass |
+| Cyclone agent invoke | < 500ms | ~150ms | ✅ Pass |
+| Disaster response invoke | < 500ms | ~200ms | ✅ Pass |
+| Urban planning invoke | < 500ms | ~180ms | ✅ Pass |
+| Agriculture invoke (with RAG) | < 500ms | ~220ms | ✅ Pass |
+| Air quality invoke | < 500ms | ~170ms | ✅ Pass |
+| Specialized agents batch (90 tests) | < 5s | ~1.8s | ✅ Pass |
+
+### Notes
+
+- Two-batch tool execution adds ~20–40ms overhead when tool count exceeds 10
+- RAG retrieval from in-memory corpus adds ~10–30ms per invoke
+- Mock RL service keeps integration tests deterministic and fast
+
+---
+
 ## Related Documents
 
 - [Stress Tests](./stress_tests.md)

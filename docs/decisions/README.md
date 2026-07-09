@@ -1,6 +1,6 @@
 # Architecture Decision Records (ADR)
 
-> **Last Updated:** 2026-07-07
+> **Last Updated:** 2026-07-09
 
 ---
 
@@ -18,6 +18,11 @@
 | [ADR-008](./ADR-008_rl_optimization_service.md) | RL Optimization Service | Accepted | 2026-07-07 |
 | [ADR-009](./ADR-009_explainability_framework.md) | Explainability Framework | Accepted | 2026-07-07 |
 | [ADR-010](./ADR-010_climate_knowledge_graph.md) | Climate Knowledge Graph | Accepted | 2026-07-07 |
+| [ADR-011](./ADR-011_cyclone_agent_architecture.md) | Cyclone Agent Architecture | Accepted | 2026-07-09 |
+| [ADR-012](./ADR-012_disaster_response_coordination.md) | Disaster Response Coordination | Accepted | 2026-07-09 |
+| [ADR-013](./ADR-013_urban_planning_scenario_intelligence.md) | Urban Planning as Scenario Intelligence | Accepted | 2026-07-09 |
+| [ADR-014](./ADR-014_agriculture_rag_architecture.md) | Agriculture RAG Architecture | Accepted | 2026-07-09 |
+| [ADR-015](./ADR-015_air_quality_environmental_intelligence.md) | Air Quality Environmental Intelligence | Accepted | 2026-07-09 |
 
 ---
 

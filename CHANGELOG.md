@@ -193,14 +193,101 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Planned
 
-- Remaining specialized agents (cyclone, agriculture, air quality, urban, disaster response)
 - Flood/Water migration to unified DecisionRequest
 - `ClimateVariable.RIVER_DISCHARGE` enum fix for RL state encoder
-- CKG wiring into agent context assembly
-- Auto-invoke ExplanationEngine in agent pipelines
-- Climate Copilot conversational interface
-- Prithvi WxC API integration
 - FastAPI HTTP layer
+- Climate Copilot conversational interface
+- Prithvi WxC API integration / Scenario Simulation Engine
 - PostgreSQL/PostGIS persistence
 - Stable Baselines3 reinforcement learning
 - Production Redis and Qdrant deployment configurations
+- CesiumJS digital twin visualization
+
+---
+
+## [0.3.0] — 2026-07-09
+
+### Added
+
+- **Cyclone Agent (Prompt 13)**
+  - `CycloneAgent` with 12 domain tools (SST, pressure, wind, ocean heat, INSAT, storm surge, etc.)
+  - `DecisionType.CYCLONE`, EmergencySupervisor registration
+  - India scenarios: Odisha Fani, Gujarat Tauktae, Chennai coastal, Bengal landfall
+  - 24 cyclone tests (12 unit + 12 integration)
+
+- **Disaster Response Agent (Prompt 14)**
+  - `DisasterResponseAgent` multi-hazard coordination meta-agent
+  - 11 domain tools, live hazard consultation via `call_agent()`
+  - `DecisionType.DISASTER`, EmergencySupervisor registration
+  - 16 disaster response tests (7 unit + 9 integration)
+
+- **Urban Planning Agent (Prompt 15)**
+  - `UrbanPlanningAgent` for long-term climate adaptation planning
+  - 11 domain tools, resilience scoring, investment prioritization
+  - `DecisionType.URBAN`, InfrastructureSupervisor registration
+  - Scenarios: Chennai flooding, Delhi UHI, Bengaluru green cover, Hyderabad drainage
+  - 16 urban planning tests (7 unit + 9 integration)
+
+- **Agriculture Agent (Prompt 16)**
+  - `AgricultureAgent` precision agriculture with provider-agnostic RAG
+  - `agriculture_rag.py` — `AgricultureKnowledgeRetriever` protocol, `InMemoryAgricultureRAG`
+  - 12 domain tools + RAG retrieval step in workflow
+  - `DecisionType.AGRICULTURE`, InfrastructureSupervisor registration
+  - Scenarios: Punjab wheat, Tamil Nadu paddy, Maharashtra cotton, Karnataka drought
+  - 17 agriculture tests (8 unit + 9 integration)
+
+- **Air Quality Agent (Prompt 17)**
+  - `AirQualityAgent` atmospheric pollution and environmental health
+  - CPCB AQI sub-index calculation, 12 domain tools
+  - `DecisionType.AQI`, EnvironmentalSupervisor registration
+  - Scenarios: Delhi severe, Punjab stubble, Rajasthan dust, Mumbai coastal
+  - 17 air quality tests (8 unit + 9 integration)
+
+- **Documentation (v0.3.0)**
+  - 5 component docs, 5 development logs (012–016), 5 ADRs (011–015)
+  - `specialized_agents_overview.md`, `backend_architecture_status.md`
+  - Workflow diagrams for all new agents, supervisor hierarchy, agent interaction map
+  - Bug history BUG-018 through BUG-024
+
+### Changed
+
+- `docs/README.md` updated with v0.3.0 progress (396 tests, 8/8 agents)
+- All Prompt 13–17 agents use two-batch tool execution when tool count > 10
+- CKG queried in observe phase for all new agents with region_id fallbacks
+
+### Improved
+
+- Inter-agent peer consultation tested across all new agents
+- XAI full pipeline on Cyclone, Disaster, Urban, Agriculture, Air Quality
+- Agriculture reasoning fallbacks when tools not executed (unit test compatibility)
+- Air Quality reasoning input fallbacks for dust/biomass detection without tools
+
+### Fixed
+
+- Cyclone tool batching for 12-tool agents (BUG-018)
+- CKG entity fallback when region_id not in seed graph (BUG-019)
+- Heatwave/urban/cyclone air quality peer coordination (BUG-020)
+- Agriculture critical deficit not setting `water_stress` (BUG-021)
+- Air Quality `Objective` schema validation in decision engine (BUG-022)
+- Air Quality XAI counterfactual string extraction (BUG-023)
+- Air Quality PM biomass burning indicator threshold (BUG-024)
+
+### Architecture
+
+- **All 8 specialized agent slots now implemented** across Environmental, Infrastructure, and Emergency supervisors
+- Agriculture introduces provider-agnostic RAG as first knowledge retrieval layer in specialized agents
+- Urban Planning positioned as scenario intelligence foundation for future Simulation Engine
+- Disaster Response operates as meta-agent coordinating hazard-specific agents
+
+### Documentation
+
+- 5 new agent component docs under `docs/agents/`
+- 5 new development logs (012–016)
+- 5 new ADRs (011–015)
+- 7 new workflow/architecture diagrams
+- `specialized_agents_overview.md` and `backend_architecture_status.md`
+
+### Tests
+
+- **396 tests passing** (+90 since v0.2.0)
+- Cyclone: 24 | Disaster: 16 | Urban: 16 | Agriculture: 17 | Air Quality: 17

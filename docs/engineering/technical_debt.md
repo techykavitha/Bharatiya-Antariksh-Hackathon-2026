@@ -220,3 +220,31 @@ flowchart LR
 - [Debugging History](../testing/debugging_history.md)
 - [System Evolution](../architecture/system_evolution.md)
 - [CHANGELOG](../../CHANGELOG.md)
+
+---
+
+## Version 0.3.0 Technical Debt Update (2026-07-09)
+
+> **Supplemental section.** All v0.2.0 items above are preserved.
+
+### Resolved in v0.3.0
+
+| Item | Resolution |
+|------|------------|
+| TD-004 (CKG not wired) | Partially resolved — all Prompt 13–17 agents query CKG in observe phase |
+| TD-005 (XAI auto-pipeline) | Partially resolved — XAI on Cyclone, Disaster, Urban, Agriculture, Air Quality |
+| Remaining 5 specialized agents | Resolved — all 8 agent slots implemented |
+
+### New Debt Items (v0.3.0)
+
+| ID | Item | Priority | Status |
+|----|------|----------|--------|
+| TD-016 | Scenario Simulation Engine pending | High | Open |
+| TD-017 | Climate Copilot pending | High | Open |
+| TD-018 | FastAPI endpoints not implemented | High | Open |
+| TD-019 | CesiumJS digital twin integration | Medium | Open |
+| TD-020 | Agriculture RAG external provider | Medium | Open |
+| TD-021 | Model/inference optimization (SB3) | Low | Open |
+| TD-022 | Deployment pipeline | Medium | Open |
+
+See [Backend Architecture Status](../architecture/backend_architecture_status.md) for integration readiness.

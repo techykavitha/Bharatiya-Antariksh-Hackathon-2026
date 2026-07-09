@@ -247,3 +247,81 @@ ClimateGraphBuilder.build_india_climate_graph()
 | CKG → Agent context assembly | Not wired | Medium |
 | XAI auto-invoke in agent pipeline | Manual only | Medium |
 | Real RL with climate_state | BUG-010 enum gap | High |
+
+---
+
+## Version 0.3.0 Update (2026-07-09)
+
+> **Supplemental section.** All v0.2.0 content above is preserved.
+
+### Flow 11: Cyclone Agent Integration
+
+**File:** `backend/tests/specialized/cyclone/test_cyclone_integration.py`
+
+```
+CycloneAgent.invoke()
+    → 12 tools (two-batch) → CKG → DecisionRequest
+    → MockRLOptimizationService → ExplanationEngine → CycloneReport
+```
+
+| Step | Component | Verified |
+|------|-----------|----------|
+| Tool batching (>10 tools) | Two-batch execution | ✅ |
+| CKG enrichment | `region_id` fallback | ✅ |
+| Flood peer delegation | `call_agent(flood_agent)` | ✅ |
+
+### Flow 12: Disaster Response Multi-Hazard Coordination
+
+**File:** `backend/tests/specialized/disaster_response/test_disaster_integration.py`
+
+```
+DisasterResponseAgent.invoke()
+    → consult flood/heatwave/air_quality/cyclone peers
+    → unified response plan → RL → XAI
+```
+
+### Flow 13: Urban Planning Scenario Intelligence
+
+**File:** `backend/tests/specialized/urban_planning/test_urban_integration.py`
+
+```
+UrbanPlanningAgent.invoke()
+    → heatwave/flood/water peers → CKG → RL → XAI
+```
+
+### Flow 14: Agriculture RAG Pipeline
+
+**File:** `backend/tests/specialized/agriculture/test_agriculture_integration.py`
+
+```
+AgricultureAgent.invoke()
+    → 12 tools → AgricultureRagService → DecisionRequest → RL → XAI
+```
+
+### Flow 15: Air Quality Environmental Intelligence
+
+**File:** `backend/tests/specialized/air_quality/test_air_quality_integration.py`
+
+```
+AirQualityAgent.invoke()
+    → AQI sub-index → health risk → peer coordination → RL → XAI
+```
+
+### Integration Matrix (v0.3.0)
+
+| Source | Target | Status |
+|--------|--------|--------|
+| Cyclone | Flood (cascade rainfall) | ✅ |
+| Disaster Response | All hazard agents | ✅ |
+| Urban Planning | Heatwave, Flood, Water | ✅ |
+| Agriculture | Water, Heatwave, Flood | ✅ |
+| Air Quality | Heatwave, Urban, Agriculture, Disaster | ✅ |
+| All new agents | CKG + RL (mock) + XAI | ✅ |
+
+### Remaining Integration Gaps (v0.3.0)
+
+| Gap | Blocker | Priority |
+|-----|---------|----------|
+| Climate Supervisor → Domain → Specialized Agent E2E | No HTTP fixture | High |
+| Real RL with climate_state | BUG-010 enum gap | High |
+| FastAPI → agent invocation | API layer not built | High |

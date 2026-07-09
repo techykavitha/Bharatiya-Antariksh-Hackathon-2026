@@ -1,6 +1,6 @@
 # Debugging History
 
-> **Last Updated:** 2026-07-07 (v0.2.0 — BUG-009 through BUG-017 added)
+> **Last Updated:** 2026-07-09 (v0.3.0 — BUG-018 through BUG-024 added)
 
 ---
 
@@ -25,6 +25,13 @@
 | BUG-015 | Decision / RL | Medium | ✅ Fixed |
 | BUG-016 | CKG / Builder | Medium | ✅ Fixed |
 | BUG-017 | CKG / Query | Medium | ✅ Fixed |
+| BUG-018 | Cyclone / Tools | Medium | ✅ Fixed |
+| BUG-019 | CKG / Agent | Medium | ✅ Fixed |
+| BUG-020 | Heatwave / Reflection | Low | ✅ Fixed |
+| BUG-021 | Agriculture / Reasoning | Medium | ✅ Fixed |
+| BUG-022 | Air Quality / Decision | High | ✅ Fixed |
+| BUG-023 | Air Quality / XAI | Medium | ✅ Fixed |
+| BUG-024 | Air Quality / PM Tool | Low | ✅ Fixed |
 
 ---
 
@@ -746,6 +753,162 @@ Expanded `related_events()` to include all entity types connected via `HISTORICA
 ### Final Status
 
 ✅ Fixed
+
+---
+
+## Version 0.3.0 Bug Summary (Prompts 13–17)
+
+### BUG-018: Cyclone Tool Batching (MAX_TOOL_CALLS_PER_INVOCATION)
+
+| Field | Value |
+|-------|-------|
+| **Bug ID** | BUG-018 |
+| **Component** | Cyclone Agent tool execution |
+| **Severity** | Medium |
+
+**Description:** Cyclone agent registers 12 tools but `BaseSpecializedAgent` limits parallel tool calls per batch. All 12 tools must execute across two batches.
+
+**Affected Files:** `backend/agents/specialized/cyclone/cyclone_agent.py`
+
+**Root Cause:** Tool count exceeds default single-batch limit of 10.
+
+**Fix Applied:** Split `_run_analyze()` into `batch_a[:10]` and `batch_b[10:]` with parallel execution per batch — pattern adopted by Agriculture, Urban, and Air Quality agents.
+
+**Regression Testing:** All 24 cyclone tests pass.
+
+**Final Status:** ✅ Fixed
+
+---
+
+### BUG-019: Knowledge Graph Fallback Using region_id
+
+| Field | Value |
+|-------|-------|
+| **Bug ID** | BUG-019 |
+| **Component** | CKG integration across new agents |
+| **Severity** | Medium |
+
+**Description:** CKG queries failed when `region_id` did not match seeded entity IDs (e.g., `live_aq_consultation`, custom scenario IDs).
+
+**Affected Files:** `cyclone_agent.py`, `urban_planning_agent.py`, `agriculture_agent.py`, `air_quality_agent.py`, `disaster_response_agent.py`
+
+**Root Cause:** `_query_knowledge_graph()` used raw `inputs.region_id` without fallback to known seed entities.
+
+**Fix Applied:** Fallback entity IDs per domain (`heatwave_delhi_2024`, `urban_ahmedabad`, `agriculture_tn_delta`, `flood_chennai_2015`). CKG query failures logged at debug level and do not block pipeline.
+
+**Regression Testing:** Integration tests with `GraphEngine.create(seed_india=True)` pass; missing entities gracefully return empty insights.
+
+**Final Status:** ✅ Fixed (graceful degradation)
+
+---
+
+### BUG-020: Heatwave Peer Coordination Improvements
+
+| Field | Value |
+|-------|-------|
+| **Bug ID** | BUG-020 |
+| **Component** | Heatwave / Urban / Cyclone reflection |
+| **Severity** | Low |
+
+**Description:** Cross-agent delegation suggestions for `air_quality_agent` were inconsistent across reflection engines.
+
+**Affected Files:** `heatwave_reflection.py`, `urban_reflection.py`, `cyclone_reflection.py`
+
+**Root Cause:** Compound hazard detection thresholds differed between agents.
+
+**Fix Applied:** Standardized peer suggestion when `heat_risk_score >= 0.6` or compound hazard flags set. Air Quality agent now implements reciprocal peer consultation.
+
+**Regression Testing:** Urban and heatwave integration tests pass; air quality reflection suggests heatwave when appropriate.
+
+**Final Status:** ✅ Fixed
+
+---
+
+### BUG-021: Agriculture Soil Moisture water_stress Flag
+
+| Field | Value |
+|-------|-------|
+| **Bug ID** | BUG-021 |
+| **Component** | Agriculture reasoning |
+| **Severity** | Medium |
+
+**Description:** `test_agriculture_reasoning_drought` failed — `drought_risk=True` but `water_stress=False` for Karnataka drought scenario (18% moisture, 50% field capacity).
+
+**Affected Files:** `backend/agents/specialized/agriculture/agriculture_reasoning.py`
+
+**Root Cause:** Critical deficit branch (`moisture < 40% field capacity`) set `drought_risk` but not `water_stress`. The `elif` branch for deficit never reached.
+
+**Fix Applied:** Set both `drought_risk=True` and `water_stress=True` in critical deficit branch.
+
+**Regression Testing:** `test_agriculture_reasoning_drought` and full agriculture suite (17 tests) pass.
+
+**Final Status:** ✅ Fixed
+
+---
+
+### BUG-022: Air Quality Objective Schema Validation
+
+| Field | Value |
+|-------|-------|
+| **Bug ID** | BUG-022 |
+| **Component** | Air Quality decision engine |
+| **Severity** | High |
+
+**Description:** All air quality integration tests failed with Pydantic validation error — `Objective` requires `objective_id` and `description`, not `name` and `direction`.
+
+**Affected Files:** `backend/agents/specialized/air_quality/air_quality_reasoning.py`
+
+**Root Cause:** `_build_objectives()` used incorrect field names inconsistent with `backend.decision.decision_types.Objective`.
+
+**Fix Applied:** Aligned with agriculture/urban pattern: `objective_id`, `description`, `maximize=False` for minimization objectives.
+
+**Regression Testing:** All 17 air quality tests pass.
+
+**Final Status:** ✅ Fixed
+
+---
+
+### BUG-023: Air Quality XAI Counterfactual Type Mismatch
+
+| Field | Value |
+|-------|-------|
+| **Bug ID** | BUG-023 |
+| **Component** | Air Quality report builder |
+| **Severity** | Medium |
+
+**Description:** `test_air_quality_agent_with_rl_xai_ckg` failed — `AirQualityReport.counterfactuals` expected `list[str]` but received `CounterfactualScenario` objects.
+
+**Affected Files:** `backend/agents/specialized/air_quality/air_quality_report.py`
+
+**Root Cause:** `_extract_xai()` assigned raw `explainability.counterfactuals.scenarios` without extracting description strings.
+
+**Fix Applied:** Match urban report pattern: extract `scenario.description or scenario.title` for each counterfactual.
+
+**Regression Testing:** RL/XAI/CKG integration test and live peer consultation test pass.
+
+**Final Status:** ✅ Fixed
+
+---
+
+### BUG-024: Air Quality PM Biomass Indicator Threshold
+
+| Field | Value |
+|-------|-------|
+| **Bug ID** | BUG-024 |
+| **Component** | Air Quality PM tool |
+| **Severity** | Low |
+
+**Description:** `test_pm_tool_punjab_stubble` failed — Punjab scenario PM2.5/PM10 ratio 0.696 did not trigger `biomass_burning_indicator` (threshold 0.7).
+
+**Affected Files:** `backend/agents/specialized/air_quality/air_quality_tools.py`
+
+**Root Cause:** Strict ratio threshold excluded valid stubble burning signatures at ratio 0.65–0.70.
+
+**Fix Applied:** Lowered biomass indicator threshold from `> 0.7` to `>= 0.65` with `pm25 > 80`.
+
+**Regression Testing:** `test_pm_tool_punjab_stubble` passes.
+
+**Final Status:** ✅ Fixed
 
 ---
 

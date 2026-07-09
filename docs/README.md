@@ -239,6 +239,8 @@ See [Documentation Growth Protocol](./engineering/documentation_growth_protocol.
 | Diagrams | [diagrams/](./diagrams/) |
 | Progress tracker | [engineering/progress_tracker.md](./engineering/progress_tracker.md) |
 | Changelog | [../CHANGELOG.md](../CHANGELOG.md) |
+| Specialized agents overview | [agents/specialized_agents_overview.md](./agents/specialized_agents_overview.md) |
+| Backend architecture status | [architecture/backend_architecture_status.md](./architecture/backend_architecture_status.md) |
 
 ---
 
@@ -345,3 +347,142 @@ NetworkX DiGraph for CKG; in-memory heuristic RL policies (Stable Baselines3 pla
 | Climate knowledge graph | [knowledge_graph/climate_knowledge_graph.md](./knowledge_graph/climate_knowledge_graph.md) |
 | System evolution | [architecture/system_evolution.md](./architecture/system_evolution.md) |
 | Technical debt | [engineering/technical_debt.md](./engineering/technical_debt.md) |
+
+---
+
+## Version 0.3.0 Update (2026-07-09)
+
+> **Supplemental section.** All v0.1.0 and v0.2.0 content above is preserved. This section reflects engineering work completed in Prompts 13–17.
+
+### Current Progress (v0.3.0)
+
+| Milestone | Component | Status | Tests | Version |
+|-----------|-----------|--------|-------|---------|
+| M0–M7b | Foundation through CKG | ✅ Complete | 306 | 0.2.0 |
+| M5f | Cyclone Agent | ✅ Complete | 24 | 0.3.0 |
+| M5g | Disaster Response Agent | ✅ Complete | 16 | 0.3.0 |
+| M5h | Urban Planning Agent | ✅ Complete | 16 | 0.3.0 |
+| M5i | Agriculture Agent | ✅ Complete | 17 | 0.3.0 |
+| M5j | Air Quality Agent | ✅ Complete | 17 | 0.3.0 |
+| M8 | Climate Copilot | ⬜ Not Started | — | — |
+| M9 | Simulation Engine | ⬜ Not Started | — | — |
+| M10 | FastAPI / Deployment | ⬜ Not Started | — | — |
+
+**Total automated tests passing:** 396 (as of 2026-07-09)
+
+**Estimated project completion:** ~78%
+
+**Backend AI layer completion:** ~85%
+
+### Completed Components (v0.3.0 additions)
+
+| Component | Location | Documentation |
+|-----------|----------|---------------|
+| Cyclone Agent | `backend/agents/specialized/cyclone/` | [agents/cyclone_agent.md](./agents/cyclone_agent.md) |
+| Disaster Response Agent | `backend/agents/specialized/disaster_response/` | [agents/disaster_response_agent.md](./agents/disaster_response_agent.md) |
+| Urban Planning Agent | `backend/agents/specialized/urban_planning/` | [agents/urban_planning_agent.md](./agents/urban_planning_agent.md) |
+| Agriculture Agent | `backend/agents/specialized/agriculture/` | [agents/agriculture_agent.md](./agents/agriculture_agent.md) |
+| Air Quality Agent | `backend/agents/specialized/air_quality/` | [agents/air_quality_agent.md](./agents/air_quality_agent.md) |
+| Specialized Agents Overview | `docs/agents/` | [agents/specialized_agents_overview.md](./agents/specialized_agents_overview.md) |
+| Backend Architecture Status | `docs/architecture/` | [architecture/backend_architecture_status.md](./architecture/backend_architecture_status.md) |
+
+### Current AI Architecture (v0.3.0)
+
+All **8 specialized agent slots** are now implemented across three domain supervisors. Every new agent (Prompts 13–17) adopts the unified `DecisionRequest` schema, `RLOptimizationService`, `ExplanationEngine`, and `GraphEngine` integration patterns established in v0.2.0. Agriculture adds a provider-agnostic RAG layer (`agriculture_rag.py`). Urban Planning is positioned as long-term scenario intelligence for future What-If Simulation.
+
+### Repository Structure (v0.3.0 additions)
+
+```
+backend/agents/specialized/
+├── cyclone/              # 12 tools, EmergencySupervisor
+├── disaster_response/    # 11 tools, EmergencySupervisor
+├── urban_planning/       # 11 tools, InfrastructureSupervisor
+├── agriculture/          # 12 tools + RAG, InfrastructureSupervisor
+└── air_quality/          # 12 tools, EnvironmentalSupervisor
+```
+
+Test count: **396** (+90 since v0.2.0).
+
+### Technology Stack (v0.3.0)
+
+No new runtime dependencies. Agriculture RAG uses protocol-based `AgricultureKnowledgeRetriever` with `InMemoryAgricultureRAG` seed corpus. Air Quality uses CPCB AQI sub-index calculation. All agents use two-batch tool execution when tool count exceeds 10.
+
+### Current Specialized Agents (v0.3.0)
+
+| Agent ID | Domain Supervisor | Status | Tests | DecisionType |
+|----------|-------------------|--------|-------|--------------|
+| `flood_agent` | Environmental | ✅ | 23 | FLOOD |
+| `heatwave_agent` | Environmental | ✅ | 25 | HEATWAVE |
+| `air_quality_agent` | Environmental | ✅ | 17 | AQI |
+| `water_resource_agent` | Infrastructure | ✅ | 24 | WATER |
+| `urban_planning_agent` | Infrastructure | ✅ | 16 | URBAN |
+| `agriculture_agent` | Infrastructure | ✅ | 17 | AGRICULTURE |
+| `cyclone_agent` | Emergency | ✅ | 24 | CYCLONE |
+| `disaster_response_agent` | Emergency | ✅ | 16 | DISASTER |
+
+### Current Test Counts (v0.3.0)
+
+| Layer | Tests |
+|-------|-------|
+| Foundation + Memory + Supervisor + Domain | 124 |
+| Specialized framework | 10 |
+| Flood + Water + Heatwave | 72 |
+| Cyclone + Disaster + Urban + Agriculture + Air Quality | 90 |
+| Decision | 38 |
+| RL | 26 |
+| XAI | 13 |
+| CKG | 24 |
+| **Total** | **396** |
+
+### Current Sprint Status (v0.3.0)
+
+| ID | Task | Status |
+|----|------|--------|
+| AGT-03 | Cyclone Agent (Prompt 13) | ✅ Complete |
+| AGT-04 | Disaster Response Agent (Prompt 14) | ✅ Complete |
+| AGT-05 | Urban Planning Agent (Prompt 15) | ✅ Complete |
+| AGT-06 | Agriculture Agent (Prompt 16) | ✅ Complete |
+| AGT-07 | Air Quality Agent (Prompt 17) | ✅ Complete |
+| DOC-03 | v0.3.0 documentation (Prompts 13–17) | ✅ Complete |
+
+### Backend Completion Status
+
+| Area | Status |
+|------|--------|
+| Specialized agent tier (8/8) | ✅ Complete |
+| Decision + RL + XAI + CKG integration | ✅ Complete (all 5 new agents) |
+| Flood/Water schema migration | ⬜ Pending |
+| Climate Copilot | ⬜ Not started |
+| Simulation Engine | ⬜ Not started |
+| FastAPI layer | ⬜ Not started |
+
+### Architecture Maturity (v0.3.0)
+
+| Dimension | Score | Notes |
+|-----------|-------|-------|
+| Agent patterns | 5/5 | Consistent `BaseSpecializedAgent` pipeline across all 8 agents |
+| Decision integration | 4/5 | Unified schema; Flood/Water still on local schemas |
+| Inter-agent communication | 4/5 | `call_agent()` wired; live delegation tested |
+| Knowledge graph | 4/5 | CKG queried in observe phase for all new agents |
+| Explainability | 4/5 | Full pipeline XAI on all Prompt 13–17 agents |
+| Production readiness | 3/5 | No API layer, mock RL in tests, heuristic policies |
+| **Overall** | **4.2/5** | Hackathon-ready via direct agent invocation |
+
+### Quick Navigation (v0.3.0 additions)
+
+| Topic | Document |
+|-------|----------|
+| Cyclone agent | [agents/cyclone_agent.md](./agents/cyclone_agent.md) |
+| Disaster response agent | [agents/disaster_response_agent.md](./agents/disaster_response_agent.md) |
+| Urban planning agent | [agents/urban_planning_agent.md](./agents/urban_planning_agent.md) |
+| Agriculture agent | [agents/agriculture_agent.md](./agents/agriculture_agent.md) |
+| Air quality agent | [agents/air_quality_agent.md](./agents/air_quality_agent.md) |
+| Specialized agents overview | [agents/specialized_agents_overview.md](./agents/specialized_agents_overview.md) |
+| Backend architecture status | [architecture/backend_architecture_status.md](./architecture/backend_architecture_status.md) |
+| Agent interaction map | [diagrams/agent_interaction_map.md](./diagrams/agent_interaction_map.md) |
+| Supervisor architecture | [diagrams/supervisor_agent_hierarchy.md](./diagrams/supervisor_agent_hierarchy.md) |
+| Cyclone agent | [agents/cyclone_agent.md](./agents/cyclone_agent.md) |
+| Disaster response agent | [agents/disaster_response_agent.md](./agents/disaster_response_agent.md) |
+| Urban planning agent | [agents/urban_planning_agent.md](./agents/urban_planning_agent.md) |
+| Agriculture agent | [agents/agriculture_agent.md](./agents/agriculture_agent.md) |
+| Air quality agent | [agents/air_quality_agent.md](./agents/air_quality_agent.md) |

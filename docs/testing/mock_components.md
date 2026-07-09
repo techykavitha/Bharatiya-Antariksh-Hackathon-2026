@@ -175,6 +175,51 @@ class _MockFloodAgent:
 
 ---
 
+## Version 0.3.0 Mock Components (2026-07-09)
+
+> **Supplemental section.** All v0.2.0 content above is preserved.
+
+### MockCycloneComm
+
+**Location:** `backend/tests/specialized/cyclone/conftest.py`  
+**Purpose:** Simulates flood agent peer responses for cyclone cascade delegation
+
+### MockDisasterComm
+
+**Location:** `backend/tests/specialized/disaster_response/conftest.py`  
+**Purpose:** Simulates hazard agent consultation responses (flood, heatwave, air_quality, cyclone)
+
+### MockUrbanComm
+
+**Location:** `backend/tests/specialized/urban_planning/conftest.py`  
+**Purpose:** Simulates heatwave, flood, and water resource peer inputs
+
+### MockAgricultureComm
+
+**Location:** `backend/tests/specialized/agriculture/conftest.py`  
+**Purpose:** Simulates water, heatwave, and flood peer inputs for crop stress analysis
+
+### InMemoryAgricultureRAG / MockAgricultureRAG
+
+**Location:** `backend/agents/specialized/agriculture/agriculture_rag.py`, `backend/tests/specialized/agriculture/conftest.py`  
+**Purpose:** Provider-agnostic RAG with seed corpus (crop calendars, advisories, best practices)
+
+| Method | Behavior |
+|--------|----------|
+| `retrieve(query, context)` | Returns ranked `RagRetrievalResult` from in-memory documents |
+
+### MockAirQualityComm
+
+**Location:** `backend/tests/specialized/air_quality/conftest.py`  
+**Purpose:** Simulates heatwave, urban, agriculture, and disaster peer responses for compound AQI events
+
+### MockRLOptimizationService (extended usage)
+
+**Used by:** All Prompt 13–17 integration tests  
+**Purpose:** Bypass `ClimateVariable.RIVER_DISCHARGE` enum bug (BUG-010) while verifying RL pipeline wiring
+
+---
+
 ## Related Documents
 
 - [Unit Test Summary](./unit_test_summary.md)
